@@ -5,7 +5,7 @@ type EmailData =
       email: string;
     };
 
-interface BasicMailData {
+interface BaseMailData {
   to: EmailData | EmailData[]; // 送信先メールアドレス
   cc?: EmailData | EmailData[]; // ccメールアドレス
   bcc?: EmailData | EmailData[]; // bccメールアドレス
@@ -16,18 +16,20 @@ interface BasicMailData {
   sendAt?: number; // 予約送信のための時間設定（最大で72時間前）
 }
 
-interface StandardMailData extends BasicMailData {
+export interface StandardMailData extends BaseMailData {
   subject?: string; // メール件名（テンプレートを使わない場合、あるいは保険的に記入）
-  text?: string; // メール本文（テンプレートを使わない場合、あるいは保険的に記入）
-  html?: string; // HTML形式のメール本文（テンプレートを使わない場合、あるいは保険的に記入）
+  text: string; // メール本文（テンプレートを使わない場合、あるいは保険的に記入）
 }
 
-interface TemplateMailData extends BasicMailData {
-  templateId?: string; // テンプレートID（ある場合）
+export interface HTMLMailData extends BaseMailData {
+  subject?: string; // メール件名（テンプレートを使わない場合、あるいは保険的に記入）
+  html: string; // HTML形式のメール本文（テンプレートを使わない場合、あるいは保険的に記入）
+}
+
+export interface TemplateMailData extends BaseMailData {
+  templateId: string; // テンプレートID（ある場合）
   dynamicTemplateData?: { [key: string]: any }; // テンプレートに埋め込む変数
 }
-
-type MailData = StandardMailData | TemplateMailData;
 
 interface MailContent {
   type: string;
@@ -35,16 +37,10 @@ interface MailContent {
 }
 
 type MailDataRequired =
-  | (MailData & {
-      text: string;
-    })
-  | (MailData & {
-      html: string;
-    })
-  | (MailData & {
-      templateId: string;
-    })
-  | (MailData & {
+  | StandardMailData
+  | HTMLMailData
+  | TemplateMailData
+  | (BaseMailData & {
       content: MailContent[] & {
         0: MailContent;
       };
