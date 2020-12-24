@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "sendgrid-sample-31052"
+  },
+  "targets": {
+    "sendgrid-sample-31052": {
+      "hosting": {
+        "sendgrid-sample": [
+          "sendgrid-sample-31052"
+        ]
+      }
+    }
   }
 }
