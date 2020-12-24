@@ -3,8 +3,8 @@ import * as sgMail from '@sendgrid/mail';
 import { SendGridMailData, TemplateMailData } from './interfaces/send-mail';
 
 // 環境変数からキーを取得
-const env = functions.config();
-const API_KEY = env.send_grid.api_key;
+const sendGridEnv = functions.config().send_grid;
+const API_KEY = sendGridEnv.api_key;
 
 // メールクライアント初期化
 sgMail.setApiKey(API_KEY);
@@ -18,10 +18,10 @@ export const sendMailBySendGrid = functions
     ): Promise<string> => {
       const sendData: SendGridMailData = {
         ...data,
-        to: env.to_email,
+        to: sendGridEnv.to_email,
         from: {
-          email: env.from_email,
-          name: env.from_name,
+          email: sendGridEnv.from_email,
+          name: sendGridEnv.from_name,
         },
       };
       return await sgMail.send(sendData).then(
